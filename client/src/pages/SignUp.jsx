@@ -36,6 +36,7 @@ const SignUp = () => {
     }
     setLoading(false);
     navigate('/sign-in')
+    setError(null)
   }catch(err){
     setLoading(false)
     setError(err.message)
@@ -79,6 +80,7 @@ const SignUp = () => {
           Sign in
         </Link>
       </div>
+      {error && <p className='text-red-500'>{error}</p>}
     </div>
   )
 }
