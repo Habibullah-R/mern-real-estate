@@ -2,11 +2,14 @@ import express from "express"
 import db from './db.js'
 import userRouter from './routes/user.routes.js'
 import authRouter from './routes/auth.routes.js'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 
 db();
 app.use(express.json())
+
+app.use(cookieParser())
 
 app.listen(3000,()=>{
     console.log("Hello server...")
