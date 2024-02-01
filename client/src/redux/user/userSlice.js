@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { REHYDRATE } from "redux-persist";
 
 const initialState = {
     currentUser: null,
@@ -37,7 +38,7 @@ const userSlice = createSlice({
         deleteStart: (state) => {
             state.loading = true;
         },
-        deleteSuccess: (state, action) => {
+        deleteSuccess: (state) => {
             state.currentUser = null;
             state.loading = false;
             state.error = null
@@ -49,7 +50,7 @@ const userSlice = createSlice({
         signOutStart: (state) => {
             state.loading = true;
         },
-        signOutSuccess: (state, action) => {
+        signOutSuccess: (state) => {
             state.currentUser = null;
             state.loading = false;
             state.error = null
@@ -58,6 +59,11 @@ const userSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
         },
+        [REHYDRATE] : (state)=>{
+            state.currentUser = null;
+            state.loading = false;
+            state.error = null
+        }
     }
 })
 
