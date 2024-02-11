@@ -151,7 +151,7 @@ const Profile = () => {
         />
         <img
           className="hover:cursor-pointer h-24 w-24 rounded-full mx-auto"
-          src={formData.avatar || currentUser.avatar}
+          src={ currentUser.avatar || formData.avatar }
           alt=""
           onClick={() => fileRef.current.click()}
         />

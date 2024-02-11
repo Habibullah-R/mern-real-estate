@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { REHYDRATE } from "redux-persist";
 
 const initialState = {
     currentUser: null,
@@ -58,11 +57,6 @@ const userSlice = createSlice({
         signOutFailure: (state, action) => {
             state.error = action.payload;
             state.loading = false;
-        },
-        [REHYDRATE] : (state)=>{
-            state.currentUser = null;
-            state.loading = false;
-            state.error = null
         }
     }
 })
