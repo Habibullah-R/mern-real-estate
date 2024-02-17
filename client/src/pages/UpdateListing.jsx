@@ -7,7 +7,8 @@ import {
 } from "firebase/storage";
 import { app } from "../firebase";
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate , useParams } from 'react-router-dom'
+import { useEffect } from "react";
 
 const CreateListing = () => {
   const navigate = useNavigate()
@@ -31,7 +32,24 @@ const CreateListing = () => {
   const [uploading, setUploading] = useState(false);
   const [error,setError] = useState(false)
   const [loading , setLoading] = useState(false)
+  const params = useParams()
 
+
+
+  useEffect(() => {
+   const fetchListing = async ()=>{
+    const listingId = params.listingId;
+    const res = await fetch(`/api/listing/get/${listingId}`)
+    const data = await res.json();
+    if(data.success === false){
+        console.log(data.message)
+        return;
+    }
+    setFormData(data)
+   }
+   fetchListing();
+  }, [])
+  
 
 
   // Images submition
@@ -137,7 +155,7 @@ const CreateListing = () => {
       if(formData.discountPrice >= formData.regularPrice ) return setError('Discounted price must be less than Regular price.')
       
     setLoading(true)
-      const res = await fetch('/api/listing/create',{
+      const res = await fetch(`/api/listing/update/${params.listingId}`,{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
@@ -165,7 +183,7 @@ const CreateListing = () => {
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h2 className="text-center font-semibold text-3xl my-7">
-        Create a Listing
+        Update a Listing
       </h2>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
@@ -371,7 +389,7 @@ const CreateListing = () => {
               </div>
             ))}
           <button disabled={loading || uploading} className="bg-slate-700 uppercase text-white p-3 rounded-lg hover:opacity-95 disabled:opacity-80">
-            {loading ? 'Creating...' : 'Create Listing'}
+            {loading ? 'Updating...' : 'Update Listing'}
           </button>
           {error && <p className="text-red-700 text-xs ">{error}</p> }
         </div>

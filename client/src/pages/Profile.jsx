@@ -30,6 +30,8 @@ const Profile = () => {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateS, setUpdateS] = useState(false);
+  const [ showListingsError , setShowListingError] = useState(false)
+  const [userListings , setUserListings] = useState({})
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -55,7 +57,6 @@ const Profile = () => {
         setFileUploadError(true);
       },
       () => {
-        console.log(uploadTask.snapshot);
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setFormData({ ...formData, avatar: downloadURL });
         });
@@ -136,6 +137,37 @@ const Profile = () => {
   }
 
 
+  const handleShowListings = async ()=>{
+    try {
+      setShowListingError(false)
+      const res = await fetch(`/api/user/listings/${currentUser._id}`)
+      const data = await res.json()
+      if(data.success === false){
+        setShowListingError(true)
+        return;
+      }
+      setUserListings(data)
+    } catch (error) {
+      setShowListingError(true)
+    }
+  }
+
+
+  const handleListingDelete = async(id)=>{
+    try {
+      const res = await fetch(`/api/listing/delete/${id}`,{
+        method:'DELETE'
+      })
+      const data = res.json();
+      if(data.success == false){
+        return;
+      }
+      setUserListings((prev)=>prev.filter((listing) => listing._id !== id ))
+    } catch (error) {
+      
+    }
+  }
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-bold text-center my-3">Profile</h1>
@@ -151,7 +183,7 @@ const Profile = () => {
         />
         <img
           className="hover:cursor-pointer h-24 w-24 rounded-full mx-auto"
-          src={ currentUser.avatar || formData.avatar }
+          src={ formData.avatar || currentUser.avatar }
           alt=""
           onClick={() => fileRef.current.click()}
         />
@@ -210,9 +242,29 @@ const Profile = () => {
           Sign Out
         </span>
       </div>
-
       <p className="text-red-700 mt-5">{error ? error : ""}</p>
       <p className="text-green-700 mt-5">{updateS ? "Success" : ""}</p>
+      <button onClick={handleShowListings} className="text-green-700 w-full" >Show Listings</button>
+      <p className="text-red-700">{showListingsError ? "Error while showing listings." :""}</p>
+      {
+        userListings && userListings.length > 0 && 
+        userListings.map((listing)=> 
+        <div key={listing._id} className="mt-3 border rounded-lg p-3 flex items-center justify-between gap-4">
+          <Link to={`/listing/${listing._id}`}>
+            <img className="w-16 h-16 object-cover" src={listing.imageUrls[0]} alt="" />
+          </Link>
+          <Link className="flex-1 truncate" to={`/listing/${listing._id}`}>
+            <p>{listing.name}</p>
+          </Link>
+          <div className="flex flex-col">
+            <button onClick={()=>handleListingDelete(listing._id)} className="text-red-700 uppercase hover:opacity-90">Delete</button>
+            <Link to={`/update-listing/${listing._id}`}>
+            <button className="text-green-700 uppercase hover:opacity-90">Edit</button>
+            </Link>
+          </div>
+        </div>
+        )
+      }
     </div>
   );
 };
