@@ -96,7 +96,7 @@ const Listing = () => {
                     {
                         listing.offer && (
                             <p className='bg-green-900 text-white p-1 rounded-md text-center w-full max-w-[200px]'>
-                    ${+listing.regularPrice - +listing.discountPrice}</p>
+                    ${+listing.regularPrice - +listing.discountPrice} discount</p>
                         )
                     }
             </div>
