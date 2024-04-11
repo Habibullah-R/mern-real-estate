@@ -15,7 +15,6 @@ const Header = () => {
         urlParams.set('searchTerm',searchTerm);
         const searchQuery = urlParams.toString();
         navigate(`search?${searchQuery}`)
-    
     }
 
 
@@ -26,7 +25,7 @@ const Header = () => {
         setSearchTerm(searchTermFromURL)
       }
     }, [location.search])
-    
+ 
 
   return (
     <header className='bg-slate-200 shadow-md'>

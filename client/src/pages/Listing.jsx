@@ -16,7 +16,7 @@ const Listing = () => {
     const [listing,setListing] = useState(null);
     const [loading,setLoading] = useState(false);
     const [error,setError] = useState(false);
-    const [copied,setCopied] = useState(false);
+    const [copied,setCopied] = useState(false)
     const [ contact , setContact ] = useState(false);
 
 

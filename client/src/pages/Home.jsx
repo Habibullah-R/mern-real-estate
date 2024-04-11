@@ -5,11 +5,21 @@ import { Navigation } from 'swiper/modules';
 import SwiperCore from 'swiper';
 import 'swiper/css/bundle';
 import ListingItem from '../components/ListingItem';
+import { useDispatch } from "react-redux";
+import {
+  signOutFailure,
+  signOutStart,
+  signOutSuccess,
+} from "../redux/user/userSlice";
+import Cookie from 'js-cookie'
+
+
 
 export default function Home() {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
+  const dispatch = useDispatch();
   SwiperCore.use([Navigation]);
   useEffect(() => {
     const fetchOfferListings = async () => {
@@ -42,8 +52,41 @@ export default function Home() {
         log(error);
       }
     };
+
+
+    const verifyCookie = async ()=>{
+      const myCookie = Cookie.get('access_token')
+      if(!myCookie){
+        try{
+          dispatch(signOutStart())
+          const res = await fetch('api/auth/signout')
+          const data = await res.json()
+    
+          if (data.success === false) {
+            dispatch(signOutFailure(data.message));
+            return;
+          }
+    
+          dispatch(signOutSuccess(data))
+    
+    
+        }catch(err){
+          dispatch(signOutFailure(err.message))
+        }
+      }
+    }
+
     fetchOfferListings();
+    verifyCookie();
   }, []);
+
+
+  
+  
+
+  
+
+
   return (
     <div>
       {/* top */}
